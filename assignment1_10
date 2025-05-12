@@ -1,0 +1,150 @@
+import java.util.*;
+
+// Parent class
+class BankAccount {
+    protected String accountNo;
+
+    BankAccount(String accountNo) {
+        this.accountNo = accountNo;
+    }
+
+    public String getAccountNo() {
+        return accountNo;
+    }
+
+    // Method to be overridden
+    public double calculateInterest(double balance) {
+        return 0.0;
+    }
+
+    public void displayAccountInfo() {
+        System.out.println("Account Number: " + accountNo);
+    }
+}
+
+// Child class - Savings Account
+class SavingsAccount extends BankAccount {
+    private static final double INTEREST_RATE = 0.04; // 4%
+
+    SavingsAccount(String accountNo) {
+        super(accountNo);
+    }
+
+    @Override
+    public double calculateInterest(double balance) {
+        return balance * INTEREST_RATE;
+    }
+
+    @Override
+    public void displayAccountInfo() {
+        super.displayAccountInfo();
+        System.out.println("Account Type: Savings");
+    }
+}
+
+// Child class - Current Account
+class CurrentAccount extends BankAccount {
+    private double overdraftLimit;
+
+    CurrentAccount(String accountNo, double overdraftLimit) {
+        super(accountNo);
+        this.overdraftLimit = overdraftLimit;
+    }
+
+    @Override
+    public double calculateInterest(double balance) {
+        return 0.02 * balance; // 2% interest
+    }
+
+    public void displayOverdraftAmount() {
+        System.out.println("Overdraft Limit: " + overdraftLimit);
+    }
+
+    @Override
+    public void displayAccountInfo() {
+        super.displayAccountInfo();
+        System.out.println("Account Type: Current");
+        displayOverdraftAmount();
+    }
+}
+
+// Main class to manage accounts
+public class BankSystem {
+    private static List<BankAccount> accounts = new ArrayList<>();
+    private static Scanner sc = new Scanner(System.in);
+
+    public static void addAccount() {
+        System.out.println("Enter account number:");
+        String accNo = sc.nextLine();
+
+        System.out.println("Enter account type (1 for Savings, 2 for Current):");
+        int type = Integer.parseInt(sc.nextLine());
+
+        if (type == 1) {
+            accounts.add(new SavingsAccount(accNo));
+            System.out.println("Savings account added.");
+        } else if (type == 2) {
+            System.out.println("Enter overdraft limit:");
+            double limit = Double.parseDouble(sc.nextLine());
+            accounts.add(new CurrentAccount(accNo, limit));
+            System.out.println("Current account added.");
+        } else {
+            System.out.println("Invalid account type.");
+        }
+    }
+
+    public static void verifyAccount() {
+        System.out.println("Enter account number to verify:");
+        String accNo = sc.nextLine();
+        for (BankAccount acc : accounts) {
+            if (acc.getAccountNo().equals(accNo)) {
+                System.out.println("Account exists:");
+                acc.displayAccountInfo();
+                return;
+            }
+        }
+        System.out.println("Account not found.");
+    }
+
+    public static void displayAllAccounts() {
+        if (accounts.isEmpty()) {
+            System.out.println("No accounts available.");
+            return;
+        }
+        System.out.println("All Bank Accounts:");
+        for (BankAccount acc : accounts) {
+            acc.displayAccountInfo();
+            System.out.println("-------------------------");
+        }
+    }
+
+    public static void main(String[] args) {
+        while (true) {
+            System.out.println("\n--- Bank Menu ---");
+            System.out.println("1. Add New Account");
+            System.out.println("2. Verify Account");
+            System.out.println("3. Display All Accounts");
+            System.out.println("0. Exit");
+            System.out.print("Enter choice: ");
+
+            int choice = Integer.parseInt(sc.nextLine());
+
+            switch (choice) {
+                case 1:
+                    addAccount();
+                    break;
+                case 2:
+                    verifyAccount();
+                    break;
+                case 3:
+                    displayAllAccounts();
+                    break;
+                case 0:
+                    System.out.println("Thank you. Exiting...");
+                    return;
+                default:
+                    System.out.println("Invalid choice.");
+            }
+        }
+    }
+}
