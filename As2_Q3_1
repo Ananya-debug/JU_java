@@ -1,0 +1,115 @@
+import java.util.Scanner;
+
+public class SimpleStringTasks {
+
+    public static boolean isPalindrome(String word) {
+        int start = 0;
+        int end = word.length() - 1;
+
+        while (start < end) {
+            if (word.charAt(start) != word.charAt(end)) {
+                return false;
+            }
+            start++;
+            end--;
+        }
+        return true;
+    }
+    public static void LargestPalindrome(String sentence)
+    {
+        String cleanSentence = "";
+        for (int i = 0; i < sentence.length(); i++) {
+            char ch = sentence.charAt(i);
+            if (Character.isLetterOrDigit(ch) || ch == ' ') {
+                cleanSentence += ch;
+            }
+        }
+
+        String[] cleanWords = cleanSentence.split(" ");
+        String largestPalindrome = "";
+        for (int i = 0; i < cleanWords.length; i++) {
+            String word = cleanWords[i];
+            if (isPalindrome(word) && word.length() > largestPalindrome.length()) {
+                largestPalindrome = word;
+            }
+        }
+
+        if (!largestPalindrome.equals("")) {
+            System.out.println("Largest palindrome: " + largestPalindrome);
+        } else {
+            System.out.println("No palindrome found.");
+        }
+
+    }
+    public static void NumberOfA(String sentence)
+    {
+        int countA = 0;
+        for (int i = 0; i < sentence.length(); i++) {
+            char ch = sentence.charAt(i);
+            if (ch == 'a' || ch == 'A') {
+                countA++;
+            }
+        }
+        System.out.println("Number of 'a' or 'A': " + countA);
+
+    }
+    public static void NumberOfAnd(String sentence)
+    {
+        String[] words = sentence.split(" ");
+        int countAnd = 0;
+        for (int i = 0; i < words.length; i++) {
+            if (words[i].equalsIgnoreCase("and")) {
+                countAnd++;
+            }
+        }
+        System.out.println("Number of times 'and' appears: " + countAnd);
+    }
+    public static void StartsThe(String sentence)
+    {
+        if (sentence.startsWith("The")) {
+            System.out.println("The sentence starts with 'The'");
+        } else {
+            System.out.println("The sentence does not start with 'The'");
+        }
+    }
+    public static void charArray(String sentence)
+    {
+        char[] charArray = sentence.toCharArray();
+        System.out.print("Characters: ");
+        for (int i = 0; i < charArray.length; i++) {
+            System.out.print(charArray[i] + " ");
+        }
+        System.out.println();
+
+    }
+    public static void tokens(String sentence)
+    {
+        System.out.println("Tokens:");
+        String[] tokens = sentence.split("[ @.]");
+        for (int i = 0; i < tokens.length; i++) {
+            if (!tokens[i].equals("")) {
+                System.out.println(tokens[i]);
+            }
+        }
+    }
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        System.out.println("Enter a sentence:");
+        String sentence = sc.nextLine();
+
+        NumberOfA(sentence);
+        
+        NumberOfAnd(sentence);
+        
+        StartsThe(sentence);
+        
+        charArray(sentence);
+        
+        tokens(sentence);
+        
+        LargestPalindrome(sentence);
+        
+       
+    }
+}
