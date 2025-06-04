@@ -1,0 +1,56 @@
+import java.util.Scanner;
+
+enum Planet {
+    MERCURY(3.303e+23, 2.4397e6),
+    VENUS(4.869e+24, 6.0518e6),
+    EARTH(5.976e+24, 6.3781e6),
+    MARS(6.421e+23, 3.3972e6),
+    JUPITER(1.9e+27, 7.1492e7),
+    SATURN(5.688e+26, 6.0268e7),
+    URANUS(8.686e+25, 2.5559e7),
+    NEPTUNE(1.024e+26, 2.4746e7);
+
+    double mass;   
+    double radius; 
+
+    Planet(double mass, double radius) {
+        this.mass = mass;
+        this.radius = radius;
+    }
+
+    public double surfaceGravity() {
+        final double G = 6.67430e-11;
+        return (G * mass) / (radius * radius);
+    }
+
+    public double weightOnPlanet(double massOnEarth) {
+        return massOnEarth * surfaceGravity();
+    }
+}
+
+public class PlanetWeightCalculator {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        
+        System.out.print("Enter your mass on Earth (kg): ");
+        double massOnEarth = scanner.nextDouble();
+
+        System.out.println("Select a planet:");
+        for (Planet p : Planet.values()) {
+            System.out.println("- " + p.name());
+        }
+
+        System.out.print("Enter planet name");
+        String planetName = scanner.next().toUpperCase();
+
+        try {
+            Planet selectedPlanet = Planet.valueOf(planetName);
+            double weight = selectedPlanet.weightOnPlanet(massOnEarth);
+            System.out.printf("Your weight on %s would be: %.2f N\n", planetName, weight);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Invalid planet name. Please try again.");
+        }
+
+        scanner.close();
+    }
+}
