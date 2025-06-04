@@ -1,0 +1,83 @@
+class FizzBuzz {
+    private int n;
+    private int current = 1;
+
+    public FizzBuzz(int n) {
+        this.n = n;
+    }
+
+    public synchronized void fizz() throws InterruptedException {
+        while (current <= n) {
+            if (current % 3 == 0 && current % 5 != 0) {
+                System.out.println("fizz");
+                current++;
+                notifyAll();
+            } else {
+                waitUntilNext();
+            }
+        }
+    }
+
+    public synchronized void buzz() throws InterruptedException {
+        while (current <= n) {
+            if (current % 5 == 0 && current % 3 != 0) {
+                System.out.println("buzz");
+                current++;
+                notifyAll();
+            } else {
+                waitUntilNext();
+            }
+        }
+    }
+
+    public synchronized void fizzbuzz() throws InterruptedException {
+        while (current <= n) {
+            if (current % 3 == 0 && current % 5 == 0) {
+                System.out.println("fizzbuzz");
+                current++;
+                notifyAll();
+            } else {
+                waitUntilNext();
+            }
+        }
+    }
+
+    private void waitUntilNext() throws InterruptedException {
+        notifyAll();
+        wait();
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        FizzBuzz fb = new FizzBuzz(20); // Change 20 to any number
+
+        Thread threadA = new Thread(() -> {
+            try {
+                fb.fizz();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+
+        Thread threadB = new Thread(() -> {
+            try {
+                fb.buzz();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+
+        Thread threadC = new Thread(() -> {
+            try {
+                fb.fizzbuzz();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+
+        threadA.start();
+        threadB.start();
+        threadC.start();
+    }
+}
