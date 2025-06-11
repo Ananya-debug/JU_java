@@ -1,0 +1,61 @@
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+
+class NoticeBoard {
+    private String notice = "Welcome to the Notice Board!";
+    private final ReentrantReadWriteLock rwLock = new ReentrantReadWriteLock();
+
+    public void readNotice(String readerName) {
+        if (rwLock.isWriteLocked()) {
+            System.out.println(readerName + ": Waiting for update to finish...");
+        }
+
+        rwLock.readLock().lock();
+        try {
+            System.out.println(readerName + " is reading: " + notice);
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            rwLock.readLock().unlock();
+        }
+    }
+
+    public void writeNotice(String newNotice, String writerName) {
+        rwLock.writeLock().lock();
+        try {
+            System.out.println(writerName + " is writing a new notice...");
+            Thread.sleep(1000);
+            this.notice = newNotice;
+            System.out.println(writerName + " updated the notice to: " + notice);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            rwLock.writeLock().unlock();
+        }
+    }
+}
+
+public class NoticeBoardTest {
+    public static void main(String[] args) {
+        NoticeBoard board = new NoticeBoard();
+
+        Thread writer = new Thread(() -> {
+            board.writeNotice("Exam will be held on Monday.", "Writer1");
+        });
+
+        Runnable readerTask = () -> {
+            String readerName = Thread.currentThread().getName();
+            board.readNotice(readerName);
+        };
+
+        Thread reader1 = new Thread(readerTask, "Reader1");
+        Thread reader2 = new Thread(readerTask, "Reader2");
+
+        reader1.start();
+        reader2.start();
+
+        try { Thread.sleep(200); } catch (InterruptedException e) { }
+
+        writer.start();
+    }
+}
