@@ -1,0 +1,65 @@
+class FizzBuzz {
+    private int n;
+    private int current = 1;
+
+    public FizzBuzz(int n) {
+        this.n = n;
+    }
+
+    public synchronized void fizz() {
+        while (current <= n) {
+            if (current % 3 == 0 && current % 5 != 0) {
+                System.out.println("fizz");
+                current++;
+                notifyAll();
+            } else {
+                try {
+                    wait();
+                } catch (InterruptedException e) { }
+            }
+        }
+    }
+
+    public synchronized void buzz() {
+        while (current <= n) {
+            if (current % 5 == 0 && current % 3 != 0) {
+                System.out.println("buzz");
+                current++;
+                notifyAll();
+            } else {
+                try {
+                    wait();
+                } catch (InterruptedException e) { }
+            }
+        }
+    }
+
+    public synchronized void fizzbuzz() {
+        while (current <= n) {
+            if (current % 15 == 0) {
+                System.out.println("fizzbuzz");
+                current++;
+                notifyAll();
+            } else {
+                try {
+                    wait();
+                } catch (InterruptedException e) { }
+            }
+        }
+    }
+}
+
+public class FizzBuzzTest {
+    public static void main(String[] args) {
+        int n = 20; 
+        FizzBuzz fb = new FizzBuzz(n);
+
+        Thread t1 = new Thread(() -> fb.fizz());
+        Thread t2 = new Thread(() -> fb.buzz());
+        Thread t3 = new Thread(() -> fb.fizzbuzz());
+
+        t1.start();
+        t2.start();
+        t3.start();
+    }
+}
