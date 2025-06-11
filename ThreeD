@@ -1,0 +1,67 @@
+import java.util.Arrays;
+import java.util.Scanner;
+
+public class ThreeD {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter k (depth), m (rows), n (cols): ");
+        int k = sc.nextInt(), m = sc.nextInt(), n = sc.nextInt();
+
+        int[][][] M1 = new int[k][m][n];
+        int[][][] M2 = new int[k][m][n];
+
+        System.out.println("Enter values for M1:");
+        read3D(M1, sc);
+        System.out.println("Enter values for M2:");
+        read3D(M2, sc);
+
+        System.out.println("\nMatrix M1:");
+        print3D(M1);
+        System.out.println("Matrix M2:");
+        print3D(M2);
+
+        int[][][] D1 = diffConsecutive(M1);
+        int[][][] D2 = diffConsecutive(M2);
+        int[][][] D12 = diffCorresponding(M1, M2);
+
+        System.out.println("\nDifferences between consecutive slices in M1:");
+        print3D(D1);
+        System.out.println("Differences between consecutive slices in M2:");
+        print3D(D2);
+        System.out.println("Differences between corresponding slices of M1 and M2:");
+        print3D(D12);
+
+        sc.close();
+    }
+
+    static void read3D(int[][][] M, Scanner sc) {
+        for (int i = 0; i < M.length; i++)
+            for (int r = 0; r < M[0].length; r++)
+                for (int c = 0; c < M[0][0].length; c++)
+                    M[i][r][c] = sc.nextInt();
+    }
+
+    static int[][][] diffConsecutive(int[][][] M) {
+        int k = M.length, m = M[0].length, n = M[0][0].length;
+        int[][][] D = new int[k - 1][m][n];
+        for (int i = 1; i < k; i++)
+            for (int r = 0; r < m; r++)
+                for (int c = 0; c < n; c++)
+                    D[i - 1][r][c] = M[i][r][c] - M[i - 1][r][c];
+        return D;
+    }
+
+    static int[][][] diffCorresponding(int[][][] A, int[][][] B) {
+        int k = A.length, m = A[0].length, n = A[0][0].length;
+        int[][][] D = new int[k][m][n];
+        for (int i = 0; i < k; i++)
+            for (int r = 0; r < m; r++)
+                for (int c = 0; c < n; c++)
+                    D[i][r][c] = A[i][r][c] - B[i][r][c];
+        return D;
+    }
+    
+    static void print3D(int[][][] M) {
+        System.out.println(Arrays.deepToString(M));
+    }
+}
